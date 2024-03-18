@@ -9,7 +9,13 @@ translator = Translator()
 token = os.environ.get('bot')
 #logging.basicConfig(filename='translation.log', level=logging.INFO)
 
-client = discord.Client()
+bot = commands.Bot(
+    command_prefix=PREFIX,
+    help_command=None,
+    intents=discord.Intents.all(),
+    strip_after_prefix=True,
+    case_insensitive=True, 
+)
 
 @client.event
 async def on_message(message):
