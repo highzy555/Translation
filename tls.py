@@ -1,56 +1,67 @@
 import discord
-from googletrans import Translator
-import os
 from discord.ext import commands
-from flask import Flask, render_template
-from threading import Thread
-app = Flask('')
-@app.route('/')
-def home():
-  return "bot python is online!"
-def index():
-  return render_template("index.html")
-def run():
-  app.run(host='0.0.0.0', port=8080)
-def highzy():
-  t = Thread(target=run)
-  t.start()
-  
-highzy()  
+from googletrans import Translator
+from langdetect import detect_langs
+import os
 
-client = commands.Bot(
-    command_prefix='!',
-    help_command=None,
-    intents=discord.Intents.all(),
-    strip_after_prefix=True,
-    case_insensitive=True, 
-)
-token = os.environ.get('bot')
+PREFIX = '!'
 translator = Translator()
+token = os.environ.get('bot')
+#logging.basicConfig(filename='translation.log', level=logging.INFO)
+
+client = discord.Client()
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('!tls'):
-        args = message.content.split(' ')
-        if len(args) < 3:
-            await message.channel.send('Usage: !translate <language> <text>')
+    if not message.content.startswith(PREFIX):
+        return
+
+    args = message.content.split(' ')
+    if len(args) < 4:
+        await message.channel.send(f'Usage: {PREFIX}translate <source language> <target language> <text>')
+        return
+
+    source_lang = args[1]
+    target_lang = args[2]
+    text = ' '.join(args[3:])
+
+    if source_lang == target_lang:
+        await message.channel.send('Source and target languages cannot be the same.')
+        return
+
+    try:
+        # ตรวจสอบโทเค็นบอท
+        if not isinstance(client.user.id, int):
+            await message.channel.send('Invalid bot token.')
             return
 
-        language = args[1]
-        text = ' '.join(args[2:])
-        try:
-            translation = translator.translate(text, dest=language)
-            await message.channel.send(translation.text)
-        except Exception as e:
-            await message.channel.send(f'Error: {e}')
-            
+        # ตรวจสอบภาษาต้นทาง
+        langs = detect_langs(text)
+        if source_lang not in [lang.lang for lang in langs]:
+            source_lang = max(langs, key=lambda lang: lang.prob).lang
+            await message.channel.send(f'Detected source language: {source_lang}')
+
+        # แปลข้อความ
+        translation = translator.translate(text, src=source_lang, dest=target_lang)
+        await message.channel.send(translation.text)
+
+        # บันทึกไปที่ไฟล์บันทึก
+        
+
+    except ValueError as e:
+        await message.channel.send(f'Invalid language code: {e}')
+    except discord.HTTPException as e:
+        await message.channel.send(f'Discord API error: {e}')
+    except Exception as e:
+        await message.channel.send(f'Error: {e}')
+        
 @client.event
 async def on_ready():
   print(f"Bot {client.user.name} is ready!")
   await client.change_presence(activity=discord.Streaming(
-      name="Black Market !", url='https://www.twitch.tv/example_channel'))            
+      name='Black Market!', url='https://www.twitch.tv/example_channel'))        
 
 client.run(token)
