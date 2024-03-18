@@ -1,6 +1,7 @@
 import discord
 from googletrans import Translator
 import os
+from discord.ext import commands
 from flask import Flask, render_template
 from threading import Thread
 app = Flask('')
@@ -17,7 +18,13 @@ def highzy():
   
 highzy()  
 
-client = discord.Client()
+client = commands.Bot(
+    command_prefix='!',
+    help_command=None,
+    intents=discord.Intents.all(),
+    strip_after_prefix=True,
+    case_insensitive=True, 
+)
 token = os.environ.get('bot')
 translator = Translator()
 
