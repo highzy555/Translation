@@ -3,3 +3,4 @@ google
 flask
 googletrans
 httpx
+discord_webhook
