@@ -2,3 +2,4 @@ discord.py
 google
 flask
 googletrans
+os
