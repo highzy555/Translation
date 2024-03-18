@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 from googletrans import Translator
 from langdetect import detect_langs
 import os
