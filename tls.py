@@ -9,7 +9,7 @@ translator = Translator()
 token = os.environ.get('bot')
 #logging.basicConfig(filename='translation.log', level=logging.INFO)
 
-bot = commands.Bot(
+client = commands.Bot(
     command_prefix=PREFIX,
     help_command=None,
     intents=discord.Intents.all(),
