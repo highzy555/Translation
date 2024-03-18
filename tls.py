@@ -43,11 +43,7 @@ class TranslationBot(discord.Client):
             # ส่งข้อความที่แปลแล้ว
             await message.channel.send(f"** # คำแปล: __{result.text}__ **")
             
-@client.event
-async def on_ready():
-  print(f"Bot {client.user.name} is ready!")
-  await client.change_presence(activity=discord.Streaming(
-      name='Translation', url='https://www.twitch.tv/example_channel'))            
+            
 
 
 client = TranslationBot()
