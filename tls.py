@@ -22,7 +22,7 @@ intents=discord.Intents.all()
 case_insensitive=True
 
 
-class TranslationBot(discord.Client):
+class TranslationBot():
     async def on_message(self, message):
         #ตอบกลับข้อความด้วยคำแปล
         if message.author == self.user:
