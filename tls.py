@@ -4,8 +4,13 @@ from discord.ext import commands
 import openpyxl 
 from deep_translator import GoogleTranslator
 
-client = discord.client()
-TOKEN = os.getenv('token')
+intents = discord.Intents.default()
+intents.message_content = True 
+intents.guilds = True 
+intents.messages = True 
+
+client = commands.Bot(command_prefix="!", intents=intents)
+TOKEN = os.getenv('bot')
 
 @client.event
 async def on_ready():
