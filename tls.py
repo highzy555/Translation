@@ -49,7 +49,7 @@ class TranslationBot(discord.Client):
             
 @client.event
 async def on_ready():
-  print(f"Bot {client.user} is ready!")
+  print(f"Bot {client.user.name} is ready!")
   await client.change_presence(activity=discord.Streaming(
       name='Translation', url='https://www.twitch.tv/example_channel'))            
 
