@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import googletrans
+import google
 import os
 from flask import Flask, render_template
 from threading import Thread
@@ -18,14 +19,8 @@ def highzy():
   
 highzy()  
 token = os.environ.get('bot')
-PREFIX = '!'
-client = commands.Bot(
-    command_prefix=PREFIX,
-    help_command=None,
-    intents=discord.Intents.all(),
-    strip_after_prefix=True,
-    case_insensitive=True, 
-)
+intents=discord.Intents.all()
+case_insensitive=True
 
 
 class TranslationBot(discord.Client):
@@ -33,7 +28,7 @@ class TranslationBot(discord.Client):
         #ตอบกลับข้อความด้วยคำแปล
         if message.author == self.user:
             return
-        if message.content.startswith(f'{PREFIX}แปล'):
+        if message.content.startswith(f'!แปล'):
             content = message.content.split(' ')
             if len(content) < 3:
                 await message.channel.send("คำสั่งใช้: !แปล <ภาษาต้นทาง> <ภาษาปลายทาง> <ข้อความ>")
