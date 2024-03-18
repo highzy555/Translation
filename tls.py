@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import googletrans
-import google
 import os
 from flask import Flask, render_template
 from threading import Thread
