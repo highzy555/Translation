@@ -4,7 +4,7 @@ from discord.ext import commands
 import openpyxl 
 from deep_translator import GoogleTranslator
 
-client = discord.Client()
+client discord.client()
 TOKEN = os.getenv('token')
 
 @client.event
