@@ -1,63 +1,73 @@
 import discord
+from googletrans import Translator
+from langdetect import detect_langs
 import os
-from discord.ext import commands
-import openpyxl 
-from deep_translator import GoogleTranslator
+#import logging
 
+PREFIX = '!'
+translator = Translator()
+token = os.environ.get('bot')
 intents = discord.Intents.default()
 intents.message_content = True 
 intents.guilds = True 
 intents.messages = True 
 
 client = commands.Bot(command_prefix="!", intents=intents)
-TOKEN = os.getenv('bot')
+#logging.basicConfig(filename='translation.log', level=logging.INFO)
 
-@client.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+client = discord.Client()
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith('h$help'):
-        text="In the first line, you have to write the language that is your input word and the language that you want to be your output like this: \n en fr \n In the second line, you must write the sentence you want to translate like this: \n hi world"
-        await message.channel.send(text)
 
+    if not message.content.startswith(f"{PREFIX}tls"):
+        return
 
-    elif message.content.startswith(''):
-        my_string=message.content
-        first = my_string.split('\n', 1)[0]
-        second_line = my_string.split('\n', 1)[1]
+    args = message.content.split(' ')
+    if len(args) < 4:
+        await message.channel.send(f'Usage: {PREFIX}tls <source language> <target language> <text>')
+        return
 
+    source_lang = args[1]
+    target_lang = args[2]
+    text = ' '.join(args[3:])
 
-        N = 0
-        count = 0
-        secondlang = ""
-        for ele in first:
-            if ele == ' ':
-                count = count + 1
-                if count == N:
-                    break
-                secondlang = ""
-            else :
-                secondlang = secondlang + ele
+    if source_lang == target_lang:
+        await message.channel.send('Source and target languages cannot be the same.')
+        return
 
+    try:
+        # ตรวจสอบโทเค็นบอท
+        if not isinstance(client.user.id, int):
+            await message.channel.send('Invalid bot token.')
+            return
 
-        Nn = 1
-        coun = 0
-        firstlang = ""
-        for el in first:
-            if el == ' ':
-                coun = coun + 1
-                if coun == Nn:
-                    break
-                firstlang = ""
-            else :
-                firstlang = firstlang + el
+        # ตรวจสอบภาษาต้นทาง
+        langs = detect_langs(text)
+        if source_lang not in [lang.lang for lang in langs]:
+            source_lang = max(langs, key=lambda lang: lang.prob).lang
+            await message.channel.send(f'Detected source language: {source_lang}')
 
-        translated = GoogleTranslator(source=firstlang, target=secondlang).translate(second_line)  # output -> Weiter so, du bist großartig
+        # แปลข้อความ
+        translation = translator.translate(text, src=source_lang, dest=target_lang)
+        await message.channel.send(translation.text)
 
-        await message.channel.send(translated)
+        # บันทึกไปที่ไฟล์บันทึก
+        #logging.info(f'{message.author.name}: {text} -> {translation.text}')
 
-client.run(TOKEN)
+    except ValueError as e:
+        await message.channel.send(f'Invalid language code: {e}')
+    except discord.HTTPException as e:
+        await message.channel.send(f'Discord API error: {e}')
+    except Exception as e:
+        await message.channel.send(f'Error: {e}')
+        
+@client.event
+async def on_ready():
+  print(f"Bot {client.user.name} is ready!")
+  await client.change_presence(activity=discord.Streaming(
+      name='Black Market!', url='https://www.twitch.tv/example_channel'))        
+
+client.run(token)
