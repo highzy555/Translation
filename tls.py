@@ -1,5 +1,6 @@
 import discord
 import os
+from discord.ext import commands
 import openpyxl 
 from deep_translator import GoogleTranslator
 
