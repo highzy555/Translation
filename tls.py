@@ -20,7 +20,7 @@ highzy()
 token = os.environ.get('bot')
 client = commands.Bot(
     help_command=None,
-    intents=discordcord.Intents.all(),
+    intents=discord.Intents.all(),
     strip_after_prefix=True,
     case_insensitive=True, 
 )
