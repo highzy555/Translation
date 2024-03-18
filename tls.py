@@ -1,50 +1,57 @@
 import discord
-from discord.ext import commands
-import googletrans
 import os
-from flask import Flask, render_template
-from threading import Thread
-app = Flask('')
-@app.route('/')
-def home():
-  return "bot python is online!"
-def index():
-  return render_template("index.html")
-def run():
-  app.run(host='0.0.0.0', port=8080)
-def highzy():
-  t = Thread(target=run)
-  t.start()
-  
-highzy()  
-token = os.environ.get('bot')
-intents=discord.Intents.all()
-case_insensitive=True
+import openpyxl 
+from deep_translator import GoogleTranslator
+
+client = discord.Client()
+TOKEN = os.getenv('token')
+
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    if message.content.startswith('h$help'):
+        text="In the first line, you have to write the language that is your input word and the language that you want to be your output like this: \n en fr \n In the second line, you must write the sentence you want to translate like this: \n hi world"
+        await message.channel.send(text)
 
 
-class TranslationBot():
-    async def on_message(self, message):
-        #ตอบกลับข้อความด้วยคำแปล
-        if message.author == self.user:
-            return
-        if message.content.startswith(f'!แปล'):
-            content = message.content.split(' ')
-            if len(content) < 3:
-                await message.channel.send("คำสั่งใช้: !แปล <ภาษาต้นทาง> <ภาษาปลายทาง> <ข้อความ>")
-                return
-            source_lang = content[1]
-            target_lang = content[2]
-            text = ' '.join(content[3:])
-
-            # แปลข้อความ
-            translator = googletrans.Translator()
-            result = translator.translate(text, dest=target_lang, src=source_lang)
-
-            # ส่งข้อความที่แปลแล้ว
-            await message.channel.send(f"** # คำแปล: __{result.text}__ **")
-            
-            
+    elif message.content.startswith(''):
+        my_string=message.content
+        first = my_string.split('\n', 1)[0]
+        second_line = my_string.split('\n', 1)[1]
 
 
-client = TranslationBot()
-client.run(token)
+        N = 0
+        count = 0
+        secondlang = ""
+        for ele in first:
+            if ele == ' ':
+                count = count + 1
+                if count == N:
+                    break
+                secondlang = ""
+            else :
+                secondlang = secondlang + ele
+
+
+        Nn = 1
+        coun = 0
+        firstlang = ""
+        for el in first:
+            if el == ' ':
+                coun = coun + 1
+                if coun == Nn:
+                    break
+                firstlang = ""
+            else :
+                firstlang = firstlang + el
+
+        translated = GoogleTranslator(source=firstlang, target=secondlang).translate(second_line)  # output -> Weiter so, du bist großartig
+
+        await message.channel.send(translated)
+
+client.run(TOKEN)
