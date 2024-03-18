@@ -18,7 +18,9 @@ def highzy():
   
 highzy()  
 token = os.environ.get('bot')
+PREFIX = '!'
 client = commands.Bot(
+    command_prefix=PREFIX,
     help_command=None,
     intents=discord.Intents.all(),
     strip_after_prefix=True,
@@ -31,7 +33,7 @@ class TranslationBot(discord.Client):
         #ตอบกลับข้อความด้วยคำแปล
         if message.author == self.user:
             return
-        if message.content.startswith('!แปล'):
+        if message.content.startswith(f'{PREFIX}แปล'):
             content = message.content.split(' ')
             if len(content) < 3:
                 await message.channel.send("คำสั่งใช้: !แปล <ภาษาต้นทาง> <ภาษาปลายทาง> <ข้อความ>")
