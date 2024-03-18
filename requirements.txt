@@ -4,3 +4,4 @@ flask
 googletrans
 httpx
 discord_webhook
+langdetect
