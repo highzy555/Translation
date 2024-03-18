@@ -16,7 +16,7 @@ intents.messages = True
 client = commands.Bot(command_prefix="!", intents=intents)
 #logging.basicConfig(filename='translation.log', level=logging.INFO)
 
-client = discord.Client()
+
 
 @client.event
 async def on_message(message):
