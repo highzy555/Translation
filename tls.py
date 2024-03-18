@@ -23,7 +23,7 @@ highzy()
 bot = commands.Bot(
     command_prefix='!',
     help_command=None,
-    intents=nextcord.Intents.all(),
+    intents=discord.Intents.all(),
     strip_after_prefix=True,
     case_insensitive=True, 
 )
