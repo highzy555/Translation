@@ -19,6 +19,8 @@ def highzy():
   t = Thread(target=run)
   t.start()
 
+highzy()
+
 bot_token = os.environ.get("bot")
 
 intents = discord.Intents.default()
