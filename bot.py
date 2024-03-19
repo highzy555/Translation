@@ -30,7 +30,7 @@ intents.messages = True
 
 client = commands.Bot(command_prefix="!", intents=intents)
 
-requesting_user = "highzixdev_69" #การร้องขอ_ผู้ใช้
+requesting_user = "" #การร้องขอ_ผู้ใช้
 
 # United States Flag = english
 # Indian Flag = Hindi
